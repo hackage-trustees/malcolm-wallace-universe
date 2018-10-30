@@ -3,7 +3,7 @@ Version: 1.20.8
 Copyright: 2004-2017, Malcolm Wallace
 License: LGPL
 License-File: LICENCE-LGPL
-Cabal-Version: >= 1.6
+Cabal-Version: >= 1.8
 Author: Malcolm Wallace <Malcolm.Wallace@me.com>
 Maintainer: Malcolm Wallace <Malcolm.Wallace@me.com>
 Homepage: http://projects.haskell.org/cpphs/
@@ -22,6 +22,18 @@ Description:
 Category: Development
 Build-type: Simple
 Extra-Source-Files: README, LICENCE-GPL, LICENCE-commercial, CHANGELOG, docs/cpphs.1, docs/index.html
+
+tested-with:
+  GHC ==8.6.1
+   || ==8.4.4
+   || ==8.2.2
+   || ==8.0.2
+   || ==7.10.3
+   || ==7.8.4
+   || ==7.6.3
+   || ==7.4.2
+   || ==7.2.2
+   || ==7.0.4
 
 Library
     Build-Depends: base>3&&<6, old-locale, old-time, directory, polyparse>=1.9

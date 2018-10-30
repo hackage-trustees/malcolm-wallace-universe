@@ -20,8 +20,19 @@ Description:
 Category: Language
 Build-Type: Simple
 Data-files: hscolour.css, data/rgb24-example-.hscolour
-Cabal-version: >=1.6
+Cabal-version: >=1.8
 
+tested-with:
+  GHC ==8.6.1
+   || ==8.4.4
+   || ==8.2.2
+   || ==8.0.2
+   || ==7.10.3
+   || ==7.8.4
+   || ==7.6.3
+   || ==7.4.2
+   || ==7.2.2
+   || ==7.0.4
 
 Library
   Build-depends: base < 10, containers
