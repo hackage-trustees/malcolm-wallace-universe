@@ -64,7 +64,23 @@ Executable HsColour
   Extensions: CPP
   cpp-options: -DMAJOR=1 -DMINOR=24
 
-
+  other-modules:
+    Language.Haskell.HsColour
+    Language.Haskell.HsColour.ACSS
+    Language.Haskell.HsColour.ANSI
+    Language.Haskell.HsColour.Anchors
+    Language.Haskell.HsColour.CSS
+    Language.Haskell.HsColour.Classify
+    Language.Haskell.HsColour.ColourHighlight
+    Language.Haskell.HsColour.Colourise
+    Language.Haskell.HsColour.General
+    Language.Haskell.HsColour.HTML
+    Language.Haskell.HsColour.InlineCSS
+    Language.Haskell.HsColour.LaTeX
+    Language.Haskell.HsColour.MIRC
+    Language.Haskell.HsColour.Options
+    Language.Haskell.HsColour.Output
+    Language.Haskell.HsColour.TTY
 
 Source-repository head
   Type    : darcs

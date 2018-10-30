@@ -37,6 +37,7 @@ module Text.ParserCombinators.HuttonMeijer
 import Data.Char
 import Control.Applicative ( Applicative(pure,(<*>)), Alternative(empty,(<|>)) )
 import Control.Monad
+import qualified Control.Monad.Fail as Fail
 
 infixr 5 +++
 
@@ -52,16 +53,19 @@ instance Functor Parser where
    fmap f (P p)    = P (\inp -> [(f v, out) | (v,out) <- p inp])
 
 instance Applicative Parser where
-   pure  = return
+   pure v        = P (\inp -> [(v,inp)])
    (<*>) = ap
 
 instance Monad Parser where
    -- return      :: a -> Parser a
-   return v        = P (\inp -> [(v,inp)])
+   return          = pure
 
    -- >>=         :: Parser a -> (a -> Parser b) -> Parser b
    (P p) >>= f     = P (\inp -> concat [papply (f v) out | (v,out) <- p inp])
 
+   fail            = Fail.fail
+
+instance Fail.MonadFail Parser where
    -- fail        :: String -> Parser a
    fail _          = P (\_ -> [])
 

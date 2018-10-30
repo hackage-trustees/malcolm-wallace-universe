@@ -28,6 +28,7 @@ import Text.ParserCombinators.Poly.Result
 import qualified Data.Text.Lazy as T
 import Data.Text.Lazy (Text)
 import Control.Applicative
+import qualified Control.Monad.Fail as Fail
 
 -- | This @Parser@ datatype is a specialised parsing monad with error
 --   reporting.  Whereas the standard version can be used for arbitrary
@@ -44,13 +45,16 @@ instance Functor (Parser s) where
     fmap f (P p) = P (\s-> fmap f . p s)
 
 instance Monad (Parser s) where
-    return x     = P (\s ts-> Success (ts,s) x)
-    fail e       = P (\s ts-> Failure (ts,s) e)
+    return       = pure
+    fail         = Fail.fail
     (P f) >>= g  = P (\s-> continue . f s)
       where
         continue (Success (ts,s) x)         = let (P g') = g x in g' s ts
         continue (Committed r)              = Committed (continue r)
         continue (Failure ts e)             = Failure ts e
+
+instance Fail.MonadFail (Parser s) where
+    fail e       = P (\s ts-> Failure (ts,s) e)
 
 instance Commitment (Parser s) where
     commit (P p)         = P (\s-> Committed . squash . p s)
@@ -77,7 +81,7 @@ instance Commitment (Parser s) where
             showErr (name,err) = name++":\n"++indent 2 err
 
 instance Applicative (Parser s) where
-    pure f    = return f
+    pure x    = P (\s ts-> Success (ts,s) x)
     pf <*> px = do { f <- pf; x <- px; return (f x) }
 #if defined(GLASGOW_HASKELL) && GLASGOW_HASKELL > 610
     p  <*  q  = p `discard` q

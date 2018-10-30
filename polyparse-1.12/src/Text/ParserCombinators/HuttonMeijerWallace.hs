@@ -56,6 +56,7 @@ module Text.ParserCombinators.HuttonMeijerWallace
 import Data.Char
 import Control.Applicative ( Applicative(pure,(<*>)), Alternative(empty,(<|>)) )
 import Control.Monad
+import qualified Control.Monad.Fail as Fail
 
 infixr 5 +++
 
@@ -76,18 +77,21 @@ instance Functor (Parser s t e) where
                        )
 
 instance Applicative (Parser s t e) where
-   pure  = return
+   pure v = P (\st inp -> Right [(v,st,inp)])
    (<*>) = ap
 
 instance Monad (Parser s t e) where
    -- return      :: a -> Parser s t e a
-   return v        = P (\st inp -> Right [(v,st,inp)])
+   return          = pure
    -- >>=         :: Parser s t e a -> (a -> Parser s t e b) -> Parser s t e b
    (P p) >>= f     = P (\st inp -> case p st inp of
                         Right res -> foldr joinresults (Right [])
                             [ papply' (f v) s out | (v,s,out) <- res ]
                         Left err  -> Left err
                        )
+   fail            = Fail.fail
+
+instance Fail.MonadFail (Parser s t e) where
    -- fail        :: String -> Parser s t e a
    fail err        = P (\st inp -> Right [])
   -- I know it's counterintuitive, but we want no-parse, not an error.

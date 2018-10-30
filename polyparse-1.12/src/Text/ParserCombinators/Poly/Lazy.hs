@@ -22,6 +22,7 @@ import Text.ParserCombinators.Poly.Base
 import Text.ParserCombinators.Poly.Result
 import qualified Text.ParserCombinators.Poly.Parser as P
 import Control.Applicative
+import qualified Control.Monad.Fail as Fail
 
 #if __GLASGOW_HASKELL__
 import Control.Exception hiding (bracket)
@@ -38,14 +39,16 @@ throwE msg = error msg
 --   to have a different instance.
 newtype Parser t a = P (P.Parser t a)
 #ifdef __GLASGOW_HASKELL__
-        deriving (Functor,Monad,Commitment)
+        deriving (Functor,Monad,Fail.MonadFail,Commitment)
 #else
 instance Functor (Parser t) where
     fmap f (P p) = P (fmap f p)
 instance Monad (Parser t) where
     return x  = P (return x)
-    fail e    = P (fail e)
+    fail      = Fail.fail
     (P f) >>= g = P (f >>= (\(P g')->g') . g)
+instance Fail.MonadFail (Parser t) where
+    fail e    = P (fail e)
 instance Commitment (Parser t) where
     commit (P p)   = P (commit p)
     (P p) `adjustErr` f  = P (p `adjustErr` f)

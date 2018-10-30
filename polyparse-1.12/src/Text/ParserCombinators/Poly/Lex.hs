@@ -30,6 +30,7 @@ module Text.ParserCombinators.Poly.Lex
 import Text.ParserCombinators.Poly.Base
 import Text.ParserCombinators.Poly.Result
 import Control.Applicative
+import qualified Control.Monad.Fail as Fail
 
 -- | In a strict language, where creating the entire input list of tokens
 --   in one shot may be infeasible, we can use a lazy "callback" kind of
@@ -54,13 +55,16 @@ instance Functor (Parser t) where
     fmap f (P p) = P (fmap f . p)
 
 instance Monad (Parser t) where
-    return x     = P (\ts-> Success ts x)
-    fail e       = P (\ts-> Failure ts e)
+    return       = pure
+    fail         = Fail.fail
     (P f) >>= g  = P (continue . f)
       where
         continue (Success ts x)             = let (P g') = g x in g' ts
         continue (Committed r)              = Committed (continue r)
         continue (Failure ts e)             = Failure ts e
+
+instance Fail.MonadFail  (Parser t) where
+    fail e       = P (\ts-> Failure ts e)
 
 instance Commitment (Parser t) where
     commit (P p)         = P (Committed . squash . p)
@@ -101,7 +105,7 @@ infixl 6 `onFail`	-- not sure about precedence 6?
         continue _  r             = r
 
 instance Applicative (Parser t) where
-    pure f    = return f
+    pure x    = P (\ts-> Success ts x)
     pf <*> px = do { f <- pf; x <- px; return (f x) }
 #if defined(GLASGOW_HASKELL) && GLASGOW_HASKELL > 610
     p  <*  q  = p `discard` q
