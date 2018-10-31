@@ -40,7 +40,7 @@ source-repository head
 
 source-repository this
   type:      git
-  location:  https://github.com/hackage-/malcolm-wallace-universe.git
+  location:  https://github.com/hackage-trustees/malcolm-wallace-universe.git
   tag:       1.12.1
 
 library
