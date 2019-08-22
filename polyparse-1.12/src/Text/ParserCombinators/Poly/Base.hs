@@ -26,6 +26,7 @@ module Text.ParserCombinators.Poly.Base
   ) where
 
 import Control.Applicative
+import qualified Control.Monad.Fail as Fail
 
 #ifdef __NHC__
 default (Integer,Double,[])	-- hack to avoid bizarre type defaulting error
@@ -62,7 +63,7 @@ class Commitment p where
 --   There are two additional basic combinators that we expect to be implemented
 --   afresh for every concrete type, but which (for technical reasons)
 --   cannot be class methods.  They are @next@ and @satisfy@.
-class (Functor p, Monad p, Applicative p, Alternative p, Commitment p) =>
+class (Functor p, Monad p, Fail.MonadFail p, Applicative p, Alternative p, Commitment p) =>
       PolyParse p
 
 infixl 3 `apply`
@@ -99,7 +100,7 @@ satisfy p = do{ x <- next
 --   An emphasised (severe) error cannot be overridden by choice
 --   operators.
 failBad :: PolyParse p => String -> p a
-failBad e = commit (fail e)
+failBad e = commit (Fail.fail e)
 
 -- | @adjustErrBad@ is just like @adjustErr@ except it also raises the
 --   severity of the error.
@@ -108,7 +109,7 @@ p `adjustErrBad` f = commit (p `adjustErr` f)
 
 -- | Parse the first alternative in the list that succeeds.
 oneOf :: PolyParse p => [p a] -> p a
-oneOf []     = fail ("failed to parse any of the possible choices")
+oneOf []     = Fail.fail ("failed to parse any of the possible choices")
 oneOf (p:ps) = p <|> oneOf ps
 --oneOf :: Show t => [Parser t a] -> Parser t a
 --oneOf []     = do { n <- next
