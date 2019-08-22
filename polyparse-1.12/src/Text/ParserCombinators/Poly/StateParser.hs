@@ -43,12 +43,15 @@ instance Applicative (Parser s t) where
 
 instance Monad (Parser s t) where
     return       = pure
-    fail         = Fail.fail
     (P f) >>= g  = P (\s-> continue . f s)
       where
         continue (Success (ts,s) x)        = let (P g') = g x in g' s ts
         continue (Committed r)             = Committed (continue r)
         continue (Failure tss e)           = Failure tss e
+
+#if !MIN_VERSION_base(4,13,0)
+    fail         = Fail.fail
+#endif
 
 instance Fail.MonadFail (Parser s t) where
     fail e       = P (\s ts-> Failure (ts,s) e)

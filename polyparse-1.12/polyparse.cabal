@@ -1,5 +1,5 @@
 name:           polyparse
-version:        1.12.1
+version:        1.13
 license:        LGPL
 license-files:   COPYRIGHT, LICENCE-LGPL, LICENCE-commercial
 copyright:      (c) 2006-2016 Malcolm Wallace
@@ -10,7 +10,8 @@ bug-reports:    https://github.com/haskell-infra/hackage-trustees/issues
 category:       Text, Parsing
 synopsis:       A variety of alternative parser combinator libraries.
 description:
-        This version, 1.12.1 is a Non-Maintainer Upload (NMU). Report issues to the Hackage Trustees issue tracker.
+        This version, 1.13 is a Non-Maintainer Upload (NMU).
+        Report issues to the Hackage Trustees issue tracker.
         .
         A variety of alternative parser combinator libraries, including
         the original HuttonMeijer set.  The Poly sets have features like
@@ -23,7 +24,8 @@ cabal-version:  >=1.8
 extra-source-files: Changelog.md
 
 tested-with:
-  GHC ==8.6.1
+  GHC ==8.8.1
+   || ==8.6.5
    || ==8.4.4
    || ==8.2.2
    || ==8.0.2
@@ -45,7 +47,7 @@ source-repository this
 
 library
   hs-source-dirs:       src
-  build-depends:        base >= 4.3.1.0 && < 4.13
+  build-depends:        base >= 4.3.1.0 && < 4.14
 
   if !impl(ghc >= 8.0)
      build-depends: fail == 4.9.*

@@ -46,12 +46,15 @@ instance Functor (Parser s) where
 
 instance Monad (Parser s) where
     return       = pure
-    fail         = Fail.fail
     (P f) >>= g  = P (\s-> continue . f s)
       where
         continue (Success (ts,s) x)         = let (P g') = g x in g' s ts
         continue (Committed r)              = Committed (continue r)
         continue (Failure ts e)             = Failure ts e
+
+#if !MIN_VERSION_base(4,13,0)
+    fail         = Fail.fail
+#endif
 
 instance Fail.MonadFail (Parser s) where
     fail e       = P (\s ts-> Failure (ts,s) e)

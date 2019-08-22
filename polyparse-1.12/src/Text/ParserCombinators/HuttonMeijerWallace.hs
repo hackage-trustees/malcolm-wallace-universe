@@ -89,7 +89,10 @@ instance Monad (Parser s t e) where
                             [ papply' (f v) s out | (v,s,out) <- res ]
                         Left err  -> Left err
                        )
+
+#if !MIN_VERSION_base(4,13,0)
    fail            = Fail.fail
+#endif
 
 instance Fail.MonadFail (Parser s t e) where
    -- fail        :: String -> Parser s t e a
