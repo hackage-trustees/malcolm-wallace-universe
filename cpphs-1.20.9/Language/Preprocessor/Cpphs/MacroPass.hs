@@ -30,9 +30,9 @@ import Language.Preprocessor.Cpphs.Options    (BoolOptions(..))
 import System.IO.Unsafe (unsafeInterleaveIO)
 import Control.Monad    ((=<<))
 --import System.Time       (getClockTime, toCalendarTime, formatCalendarTime)
---import System.Locale     (defaultTimeLocale)
 import Data.Time.Clock  (getCurrentTime)
-import Data.Time.Format (formatTime, defaultTimeLocale)
+import Data.Time.Format (formatTime)
+import TimeCompat       (defaultTimeLocale)
 
 noPos :: Posn
 noPos = newfile "preDefined"
