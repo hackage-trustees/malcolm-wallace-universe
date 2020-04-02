@@ -74,6 +74,8 @@ instance Enum Highlight where
   fromEnum (Background c) = 40 + fromEnum c
   fromEnum Italic       = 2
 
+  toEnum _ = error "toEnum @Highlight"
+
 
 -- | = 'highlightG' 'Ansi16Colour'
 highlight ::  [Highlight] -> String -> String
