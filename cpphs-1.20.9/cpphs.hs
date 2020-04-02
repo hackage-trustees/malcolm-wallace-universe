@@ -21,7 +21,7 @@ import Control.Monad  ( when )
 import Data.List   ( isPrefixOf )
 
 version :: String
-version = "1.20.8"
+version = "1.20.9"
 
 main :: IO ()
 main = do

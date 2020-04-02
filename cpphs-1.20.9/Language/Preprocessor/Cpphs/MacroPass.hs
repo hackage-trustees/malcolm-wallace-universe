@@ -29,8 +29,10 @@ import Language.Preprocessor.Cpphs.Position   (Posn, newfile, filename, lineno)
 import Language.Preprocessor.Cpphs.Options    (BoolOptions(..))
 import System.IO.Unsafe (unsafeInterleaveIO)
 import Control.Monad    ((=<<))
-import System.Time       (getClockTime, toCalendarTime, formatCalendarTime)
-import System.Locale     (defaultTimeLocale)
+--import System.Time       (getClockTime, toCalendarTime, formatCalendarTime)
+import Data.Time.Clock  (getCurrentTime)
+import Data.Time.Format (formatTime)
+import TimeCompat       (defaultTimeLocale)
 
 noPos :: Posn
 noPos = newfile "preDefined"
@@ -132,12 +134,16 @@ macroProcess pr layout lang st (Ident p x: ws) =
       "__FILE__" -> emit (show (filename p))$ macroProcess pr layout lang st ws
       "__LINE__" -> emit (show (lineno p))  $ macroProcess pr layout lang st ws
       "__DATE__" -> do w <- return .
-                            formatCalendarTime defaultTimeLocale "\"%d %b %Y\""
-                            =<< toCalendarTime =<< getClockTime
+                         -- formatCalendarTime defaultTimeLocale "\"%d %b %Y\""
+                         -- =<< toCalendarTime =<< getClockTime
+                            formatTime defaultTimeLocale "\"%d %b %Y\""
+                            =<< getCurrentTime
                        emit w $ macroProcess pr layout lang st ws
       "__TIME__" -> do w <- return .
-                            formatCalendarTime defaultTimeLocale "\"%H:%M:%S\""
-                            =<< toCalendarTime =<< getClockTime
+                         -- formatCalendarTime defaultTimeLocale "\"%H:%M:%S\""
+                         -- =<< toCalendarTime =<< getClockTime
+                            formatTime defaultTimeLocale "\"%H:%M:%S\""
+                            =<< getCurrentTime
                        emit w $ macroProcess pr layout lang st ws
       _ ->
         case lookupST x st of

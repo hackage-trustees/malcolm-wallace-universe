@@ -1,5 +1,5 @@
 Name: cpphs
-Version: 1.20.8
+Version: 1.20.9.1
 Copyright: 2004-2017, Malcolm Wallace
 License: LGPL
 License-File: LICENCE-LGPL
@@ -24,7 +24,8 @@ Build-type: Simple
 Extra-Source-Files: README, LICENCE-GPL, LICENCE-commercial, CHANGELOG, docs/cpphs.1, docs/index.html
 
 tested-with:
-  GHC ==8.8.1
+  ghc ==8.10.1
+   || ==8.8.3
    || ==8.6.5
    || ==8.4.4
    || ==8.2.2
@@ -36,8 +37,24 @@ tested-with:
    || ==7.2.2
    || ==7.0.4
 
+flag old-locale
+  description: If true, use old-locale, otherwise use time 1.5 or newer.
+  manual:      False
+  default:     False
+
 Library
-    Build-Depends: base>3&&<6, old-locale, old-time, directory, polyparse>=1.9
+    Build-Depends: base >= 4.3 && <5, directory <1.4, polyparse>=1.13 && <1.14
+
+    if flag(old-locale)
+      Build-Depends:
+          old-locale  >=1.0.0.2 && <1.1
+        , time        >=0       && <1.5
+      Hs-Source-Dirs: . old
+
+    else
+      Build-Depends: time >=1.5 && <1.11
+      Hs-Source-Dirs: . new
+
     Exposed-Modules:
         Language.Preprocessor.Cpphs
         Language.Preprocessor.Unlit
@@ -51,10 +68,22 @@ Library
         Language.Preprocessor.Cpphs.RunCpphs
         Language.Preprocessor.Cpphs.SymTab
         Language.Preprocessor.Cpphs.Tokenise
+        TimeCompat
 
 Executable cpphs
-    Build-Depends: base>3&&<6, old-locale, old-time, directory, polyparse>=1.9
+    Build-Depends: base>=3&&<6, directory <1.4, polyparse>=1.13 && <1.14
     Main-Is: cpphs.hs
+
+    if flag(old-locale)
+      Build-Depends:
+          old-locale  >=1.0.0.2 && <1.1
+        , time        >=0       && <1.5
+      Hs-Source-Dirs: . old
+
+    else
+      Build-Depends: time >=1.5 && <1.11
+      Hs-Source-Dirs: . new
+
     Other-Modules:
         Language.Preprocessor.Cpphs
         Language.Preprocessor.Unlit
@@ -67,7 +96,8 @@ Executable cpphs
         Language.Preprocessor.Cpphs.RunCpphs
         Language.Preprocessor.Cpphs.SymTab
         Language.Preprocessor.Cpphs.Tokenise
+        TimeCompat
 
 Source-Repository head
-    Type:     darcs
-    Location: http://code.haskell.org/cpphs
+    Type:     git
+    Location: https://github.com/hackage-trustees/malcolm-wallace-universe
