@@ -99,5 +99,5 @@ Executable cpphs
         TimeCompat
 
 Source-Repository head
-    Type:     darcs
-    Location: http://code.haskell.org/cpphs
+    Type:     git
+    Location: https://github.com/hackage-trustees/malcolm-wallace-universe
