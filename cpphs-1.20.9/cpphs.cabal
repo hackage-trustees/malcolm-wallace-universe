@@ -24,8 +24,9 @@ Build-type: Simple
 Extra-Source-Files: README, LICENCE-GPL, LICENCE-commercial, CHANGELOG, docs/cpphs.1, docs/index.html
 
 tested-with:
-  ghc ==8.10.1
-   || ==8.8.3
+  ghc ==9.0.1
+   || ==8.10.4
+   || ==8.8.4
    || ==8.6.5
    || ==8.4.4
    || ==8.2.2
