@@ -23,8 +23,9 @@ Data-files: hscolour.css, data/rgb24-example-.hscolour
 Cabal-version: >=1.8
 
 tested-with:
-  GHC ==8.10.1
-   || ==8.8.3
+  GHC ==9.0.1
+   || ==8.10.4
+   || ==8.8.4
    || ==8.6.5
    || ==8.4.4
    || ==8.2.2
