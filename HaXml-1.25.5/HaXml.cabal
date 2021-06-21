@@ -38,7 +38,7 @@ tested-with:
 source-repository this
   type:      git
   location:  https://github.com/hackage-trustees/malcolm-wallace-universe.git
-  tag:       1.25.5
+  tag:       HaXml-1.25.5
 
 library
   exposed-modules:
