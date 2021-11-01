@@ -24,8 +24,9 @@ Build-type: Simple
 Extra-Source-Files: README, LICENCE-GPL, LICENCE-commercial, CHANGELOG, docs/cpphs.1, docs/index.html
 
 tested-with:
-  ghc ==9.0.1
-   || ==8.10.4
+  ghc ==9.2.1
+   || ==9.0.1
+   || ==8.10.7
    || ==8.8.4
    || ==8.6.5
    || ==8.4.4
@@ -53,7 +54,7 @@ Library
       Hs-Source-Dirs: . old
 
     else
-      Build-Depends: time >=1.5 && <1.11
+      Build-Depends: time >=1.5 && <1.13
       Hs-Source-Dirs: . new
 
     Exposed-Modules:
@@ -82,7 +83,7 @@ Executable cpphs
       Hs-Source-Dirs: . old
 
     else
-      Build-Depends: time >=1.5 && <1.11
+      Build-Depends: time >=1.5 && <1.13
       Hs-Source-Dirs: . new
 
     Other-Modules:
