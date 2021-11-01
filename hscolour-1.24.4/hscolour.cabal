@@ -9,7 +9,7 @@ License-file: LICENCE-LGPL
 Synopsis: Colourise Haskell code.
 Description:
   hscolour is a small Haskell script to colourise Haskell code. It currently
-  has six output formats: 
+  has six output formats:
   ANSI terminal codes (optionally XTerm-256colour codes),
   HTML 3.2 with <font> tags,
   HTML 4.01 with CSS,
@@ -39,7 +39,7 @@ tested-with:
 
 Library
   Build-depends: base < 10, containers
-  Exposed-Modules: 
+  Exposed-Modules:
     Language.Haskell.HsColour
     Language.Haskell.HsColour.ANSI
     Language.Haskell.HsColour.Anchors
@@ -57,7 +57,7 @@ Library
     Language.Haskell.HsColour.Output
     Language.Haskell.HsColour.TTY
   --ghc-options: -O -W
-  Extensions: 
+  Extensions:
 
 
 Executable HsColour
