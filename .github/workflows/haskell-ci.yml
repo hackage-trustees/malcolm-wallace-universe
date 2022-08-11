@@ -8,9 +8,9 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.13.20211030
+# version: 0.15.20220808
 #
-# REGENDATA ("0.13.20211030",["github","cabal.project"])
+# REGENDATA ("0.15.20220808",["github","cabal.project"])
 #
 name: Haskell-CI
 on:
@@ -19,22 +19,29 @@ on:
 jobs:
   linux:
     name: Haskell-CI - Linux - ${{ matrix.compiler }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
+    timeout-minutes:
+      60
     container:
       image: buildpack-deps:bionic
     continue-on-error: ${{ matrix.allow-failure }}
     strategy:
       matrix:
         include:
-          - compiler: ghc-9.2.1
+          - compiler: ghc-9.4.1
             compilerKind: ghc
-            compilerVersion: 9.2.1
+            compilerVersion: 9.4.1
             setup-method: ghcup
             allow-failure: false
-          - compiler: ghc-9.0.1
+          - compiler: ghc-9.2.4
             compilerKind: ghc
-            compilerVersion: 9.0.1
-            setup-method: hvr-ppa
+            compilerVersion: 9.2.4
+            setup-method: ghcup
+            allow-failure: false
+          - compiler: ghc-9.0.2
+            compilerKind: ghc
+            compilerVersion: 9.0.2
+            setup-method: ghcup
             allow-failure: false
           - compiler: ghc-8.10.7
             compilerKind: ghc
@@ -104,18 +111,18 @@ jobs:
           apt-get install -y --no-install-recommends gnupg ca-certificates dirmngr curl git software-properties-common libtinfo5
           if [ "${{ matrix.setup-method }}" = ghcup ]; then
             mkdir -p "$HOME/.ghcup/bin"
-            curl -sL https://downloads.haskell.org/ghcup/0.1.17.3/x86_64-linux-ghcup-0.1.17.3 > "$HOME/.ghcup/bin/ghcup"
+            curl -sL https://downloads.haskell.org/ghcup/0.1.18.0/x86_64-linux-ghcup-0.1.18.0 > "$HOME/.ghcup/bin/ghcup"
             chmod a+x "$HOME/.ghcup/bin/ghcup"
-            "$HOME/.ghcup/bin/ghcup" install ghc "$HCVER"
-            "$HOME/.ghcup/bin/ghcup" install cabal 3.6.2.0
+            "$HOME/.ghcup/bin/ghcup" install ghc "$HCVER" || (cat "$HOME"/.ghcup/logs/*.* && false)
+            "$HOME/.ghcup/bin/ghcup" install cabal 3.6.2.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
           else
             apt-add-repository -y 'ppa:hvr/ghc'
             apt-get update
             apt-get install -y "$HCNAME"
             mkdir -p "$HOME/.ghcup/bin"
-            curl -sL https://downloads.haskell.org/ghcup/0.1.17.3/x86_64-linux-ghcup-0.1.17.3 > "$HOME/.ghcup/bin/ghcup"
+            curl -sL https://downloads.haskell.org/ghcup/0.1.18.0/x86_64-linux-ghcup-0.1.18.0 > "$HOME/.ghcup/bin/ghcup"
             chmod a+x "$HOME/.ghcup/bin/ghcup"
-            "$HOME/.ghcup/bin/ghcup" install cabal 3.6.2.0
+            "$HOME/.ghcup/bin/ghcup" install cabal 3.6.2.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
           fi
         env:
           HCKIND: ${{ matrix.compilerKind }}
@@ -175,6 +182,10 @@ jobs:
           repository hackage.haskell.org
             url: http://hackage.haskell.org/
           EOF
+          cat >> $CABAL_CONFIG <<EOF
+          program-default-options
+            ghc-options: $GHCJOBS +RTS -M3G -RTS
+          EOF
           cat $CABAL_CONFIG
       - name: versions
         run: |
@@ -201,7 +212,6 @@ jobs:
         run: |
           touch cabal.project
           echo "packages: $GITHUB_WORKSPACE/source/cpphs-1.20.9" >> cabal.project
-          echo "packages: $GITHUB_WORKSPACE/source/HaXml-1.25.4" >> cabal.project
           echo "packages: $GITHUB_WORKSPACE/source/hscolour-1.24.4" >> cabal.project
           echo "packages: $GITHUB_WORKSPACE/source/polyparse-1.12" >> cabal.project
           cat cabal.project
@@ -217,8 +227,6 @@ jobs:
         run: |
           PKGDIR_cpphs="$(find "$GITHUB_WORKSPACE/unpacked" -maxdepth 1 -type d -regex '.*/cpphs-[0-9.]*')"
           echo "PKGDIR_cpphs=${PKGDIR_cpphs}" >> "$GITHUB_ENV"
-          PKGDIR_HaXml="$(find "$GITHUB_WORKSPACE/unpacked" -maxdepth 1 -type d -regex '.*/HaXml-[0-9.]*')"
-          echo "PKGDIR_HaXml=${PKGDIR_HaXml}" >> "$GITHUB_ENV"
           PKGDIR_hscolour="$(find "$GITHUB_WORKSPACE/unpacked" -maxdepth 1 -type d -regex '.*/hscolour-[0-9.]*')"
           echo "PKGDIR_hscolour=${PKGDIR_hscolour}" >> "$GITHUB_ENV"
           PKGDIR_polyparse="$(find "$GITHUB_WORKSPACE/unpacked" -maxdepth 1 -type d -regex '.*/polyparse-[0-9.]*')"
@@ -227,12 +235,9 @@ jobs:
           touch cabal.project
           touch cabal.project.local
           echo "packages: ${PKGDIR_cpphs}" >> cabal.project
-          echo "packages: ${PKGDIR_HaXml}" >> cabal.project
           echo "packages: ${PKGDIR_hscolour}" >> cabal.project
           echo "packages: ${PKGDIR_polyparse}" >> cabal.project
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package cpphs" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package HaXml" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package hscolour" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
@@ -240,7 +245,7 @@ jobs:
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
           cat >> cabal.project <<EOF
           EOF
-          $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: $_ installed\n" unless /^(HaXml|cpphs|hscolour|polyparse)$/; }' >> cabal.project.local
+          $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: $_ installed\n" unless /^(cpphs|hscolour|polyparse)$/; }' >> cabal.project.local
           cat cabal.project
           cat cabal.project.local
       - name: dump install plan
@@ -267,15 +272,13 @@ jobs:
         run: |
           cd ${PKGDIR_cpphs} || false
           ${CABAL} -vnormal check
-          cd ${PKGDIR_HaXml} || false
-          ${CABAL} -vnormal check
           cd ${PKGDIR_hscolour} || false
           ${CABAL} -vnormal check
           cd ${PKGDIR_polyparse} || false
           ${CABAL} -vnormal check
       - name: haddock
         run: |
-          $CABAL v2-haddock $ARG_COMPILER --with-haddock $HADDOCK $ARG_TESTS $ARG_BENCH all
+          $CABAL v2-haddock --haddock-all $ARG_COMPILER --with-haddock $HADDOCK $ARG_TESTS $ARG_BENCH all
       - name: unconstrained build
         run: |
           rm -f cabal.project.local
