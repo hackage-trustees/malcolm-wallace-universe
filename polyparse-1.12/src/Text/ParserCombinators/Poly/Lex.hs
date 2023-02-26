@@ -35,7 +35,7 @@ import qualified Control.Monad.Fail as Fail
 -- | In a strict language, where creating the entire input list of tokens
 --   in one shot may be infeasible, we can use a lazy "callback" kind of
 --   architecture instead.  The lexer returns a single token at a time,
---   together with a continuation.  The @next@ parser is responsible for 
+--   together with a continuation.  The @next@ parser is responsible for
 --   pulling on the token stream, applying the continuation where necessary.
 data LexReturn t = LexReturn t String (String->LexReturn t)
                  | LexFinish
@@ -93,7 +93,7 @@ instance Commitment (Parser t) where
                            r@(Committed _)    -> r )
             showErr (name,err) = name ++ "\n" ++ indent 2 err
 
-infixl 6 `onFail`	-- not sure about precedence 6?
+infixl 6 `onFail`       -- not sure about precedence 6?
 
 -- | @p `onFail` q@ means parse p, unless p fails, in which case
 --   parse q instead.

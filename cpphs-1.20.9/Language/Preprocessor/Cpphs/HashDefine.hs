@@ -10,7 +10,7 @@
 --
 -- What structures are declared in a \#define.
 -----------------------------------------------------------------------------
- 
+
 module Language.Preprocessor.Cpphs.HashDefine
   ( HashDefine(..)
   , ArgOrText(..)

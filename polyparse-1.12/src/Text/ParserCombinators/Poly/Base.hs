@@ -1,26 +1,26 @@
 module Text.ParserCombinators.Poly.Base
   ( -- * The PolyParse classes
-    Commitment(..)	-- class of all two-level-error values
-  , PolyParse		-- class of all monadic two-level-error parsers
+    Commitment(..)      -- class of all two-level-error values
+  , PolyParse           -- class of all monadic two-level-error parsers
 
     -- * Combinators general to all parser types.
     -- ** Simple combinators
-  , apply	-- :: PolyParse p => p (a->b) -> p a -> p b
-  , discard	-- :: PolyParse p => p a      -> p b -> p a
+  , apply       -- :: PolyParse p => p (a->b) -> p a -> p b
+  , discard     -- :: PolyParse p => p a      -> p b -> p a
     -- ** Error-handling
-  , failBad	-- :: PolyParse p => String -> p a
+  , failBad     -- :: PolyParse p => String -> p a
   , adjustErrBad-- :: PolyParse p => p a -> (String->String) -> p a
-  , indent	-- :: Int -> String -> String
+  , indent      -- :: Int -> String -> String
     -- ** Choices
-  , oneOf	-- :: PolyParse p => [p a] -> p a
+  , oneOf       -- :: PolyParse p => [p a] -> p a
     -- ** Sequences
-  , exactly	-- :: PolyParse p => Int -> p a -> p [a]
-  , upto	-- :: PolyParse p => Int -> p a -> p [a]
-  , many1	-- :: PolyParse p => p a -> p [a]
-  , sepBy	-- :: PolyParse p => p a -> p sep -> p [a]
-  , sepBy1	-- :: PolyParse p => p a -> p sep -> p [a]
-  , bracketSep	-- :: PolyParse p => p bra -> p sep -> p ket -> p a -> p [a]
-  , bracket	-- :: PolyParse p => p bra -> p ket -> p a -> p a
+  , exactly     -- :: PolyParse p => Int -> p a -> p [a]
+  , upto        -- :: PolyParse p => Int -> p a -> p [a]
+  , many1       -- :: PolyParse p => p a -> p [a]
+  , sepBy       -- :: PolyParse p => p a -> p sep -> p [a]
+  , sepBy1      -- :: PolyParse p => p a -> p sep -> p [a]
+  , bracketSep  -- :: PolyParse p => p bra -> p sep -> p ket -> p a -> p [a]
+  , bracket     -- :: PolyParse p => p bra -> p ket -> p a -> p a
   , manyFinally -- :: PolyParse p => p a -> p z -> p [a]
   , manyFinally'-- :: PolyParse p => p a -> p z -> p [a]
   ) where
@@ -29,7 +29,7 @@ import Control.Applicative
 import qualified Control.Monad.Fail as Fail
 
 #ifdef __NHC__
-default (Integer,Double,[])	-- hack to avoid bizarre type defaulting error
+default (Integer,Double,[])     -- hack to avoid bizarre type defaulting error
 instance Commitment []
 instance PolyParse []
 #endif
@@ -165,7 +165,7 @@ sepBy1 p sep = do { x <- p
                   ; return (x:) `apply` many (do {sep; p})
                   }
          `adjustErr` ("When looking for a non-empty sequence with separators:\n\t"++)
- 
+
 -- | Parse a list of items, discarding the start, end, and separator
 --   items.
 bracketSep :: PolyParse p => p bra -> p sep -> p ket -> p a -> p [a]

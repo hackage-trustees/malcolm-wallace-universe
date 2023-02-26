@@ -1,20 +1,20 @@
 module Text.Parse.ByteString
-  ( -- * The Parse class is a replacement for the standard Read class. 
+  ( -- * The Parse class is a replacement for the standard Read class.
     --   This particular instance reads from ByteString rather than String.
     -- $parser
-    TextParser	-- synonym for Text.ParserCombinators.Poly.ByteString
-  , Parse(..)	-- instances: (), (a,b), (a,b,c), Maybe a, Either a, [a],
-		--            Int, Integer, Float, Double, Char, Bool
-  , parseByRead	-- :: Read a => String -> TextParser a
+    TextParser  -- synonym for Text.ParserCombinators.Poly.ByteString
+  , Parse(..)   -- instances: (), (a,b), (a,b,c), Maybe a, Either a, [a],
+                --            Int, Integer, Float, Double, Char, Bool
+  , parseByRead -- :: Read a => String -> TextParser a
   , readByParse -- :: TextParser a -> ReadS a
   , readsPrecByParsePrec -- :: (Int->TextParser a) -> Int -> ReadS a
     -- ** Combinators specific to bytestring input, lexed haskell-style
-  , word	-- :: TextParser String
-  , isWord	-- :: String -> TextParser ()
-  , literal	-- :: String -> TextParser ()
-  , optionalParens	-- :: TextParser a -> TextParser a
-  , parens	-- :: Bool -> TextParser a -> TextParser a
-  , field	-- :: Parse a => String -> TextParser a
+  , word        -- :: TextParser String
+  , isWord      -- :: String -> TextParser ()
+  , literal     -- :: String -> TextParser ()
+  , optionalParens      -- :: TextParser a -> TextParser a
+  , parens      -- :: Bool -> TextParser a -> TextParser a
+  , field       -- :: Parse a => String -> TextParser a
   , constructors-- :: [(String,TextParser a)] -> TextParser a
   , enumeration -- :: Show a => String -> [a] -> TextParser a
     -- ** Parsers for literal numerics and characters
@@ -72,7 +72,7 @@ class Parse a where
     parsePrec _ = optionalParens parse
     -- | Parsing a list of items by default accepts the [] and comma syntax,
     --   except when the list is really a character string using \"\".
-    parseList :: TextParser [a]	-- only to distinguish [] and ""
+    parseList :: TextParser [a] -- only to distinguish [] and ""
     parseList  = do { isWord "[]"; return [] }
                    `onFail`
                  do { isWord "["; isWord "]"; return [] }
@@ -426,7 +426,7 @@ parseLitChar = do c <- next
 
 -- Basic types
 instance Parse Int where
-    parse = fmap fromInteger $	-- convert from Integer, deals with minInt
+    parse = fmap fromInteger $  -- convert from Integer, deals with minInt
               do manySatisfy isSpace; parseSigned parseUnsignedInteger
 instance Parse Integer where
     parse = do manySatisfy isSpace; parseSigned parseUnsignedInteger
@@ -436,7 +436,7 @@ instance Parse Double where
     parse = do manySatisfy isSpace; parseSigned parseFloat
 instance Parse Char where
     parse = do manySatisfy isSpace; parseLitChar'
-	-- not totally correct for strings...
+        -- not totally correct for strings...
     parseList = do { w <- word; if head w == '"' then return (init (tail w))
                                 else fail "not a string" }
 

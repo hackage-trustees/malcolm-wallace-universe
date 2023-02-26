@@ -70,8 +70,8 @@ identifier st t@((Layout,"("):stream) =
     case stream of
       ((Varop,v):(Layout,")"):_)
                   --  | typesig stream  -> Nothing
-	              | v `inST` st     -> Nothing
-	              | otherwise	-> Just (fix v)
+                      | v `inST` st     -> Nothing
+                      | otherwise       -> Just (fix v)
       notVarop -> case skip (munchParens stream) of
           ((Varop,v):_) | not (v`inST`st) -> Just (fix v)
           _             -> Nothing
@@ -100,12 +100,12 @@ typesig _                     = False
 
 -- throw away everything from opening paren to matching close
 munchParens ::  [(TokenType, String)] -> [(TokenType, String)]
-munchParens =  munch (0::Int)	-- already seen open paren
+munchParens =  munch (0::Int)   -- already seen open paren
   where munch 0 ((Layout,")"):rest) = rest
         munch n ((Layout,")"):rest) = munch (n-1) rest
         munch n ((Layout,"("):rest) = munch (n+1) rest
         munch n (_:rest)            = munch n rest
-        munch _ []                  = []	-- source is ill-formed
+        munch _ []                  = []        -- source is ill-formed
 
 -- ensure anchor name is correct for a Varop
 fix ::  String -> String

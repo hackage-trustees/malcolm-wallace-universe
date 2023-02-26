@@ -1,18 +1,18 @@
 {-# LANGUAGE CPP, GeneralizedNewtypeDeriving #-}
 module Text.ParserCombinators.Poly.Lazy
   ( -- * The Parser datatype
-    Parser(P)	-- datatype, instance of: Functor, Monad, PolyParse
-  , Result(..)	-- internal to the parser monad
-  , runParser	-- :: Parser t a -> [t] -> (Either String a, [t])
+    Parser(P)   -- datatype, instance of: Functor, Monad, PolyParse
+  , Result(..)  -- internal to the parser monad
+  , runParser   -- :: Parser t a -> [t] -> (Either String a, [t])
     -- ** Basic parsers
-  , next	-- :: Parser t t
-  , eof		-- :: Parser t ()
-  , satisfy	-- :: (t->Bool) -> Parser t t
-  , satisfyMsg	-- :: (t->Bool) -> String -> Parser t t
+  , next        -- :: Parser t t
+  , eof         -- :: Parser t ()
+  , satisfy     -- :: (t->Bool) -> Parser t t
+  , satisfyMsg  -- :: (t->Bool) -> String -> Parser t t
   , onFail      -- :: Parser t a -> Parser t a -> Parser t a
 
     -- ** Re-parsing
-  , reparse	-- :: [t] -> Parser t ()
+  , reparse     -- :: [t] -> Parser t ()
     -- * Re-export all more general combinators
   , module Text.ParserCombinators.Poly.Base
   , module Control.Applicative

@@ -1,19 +1,19 @@
 module Text.Parse
-  ( -- * The Parse class is a replacement for the standard Read class. 
+  ( -- * The Parse class is a replacement for the standard Read class.
     -- $parser
-    TextParser	-- synonym for Parser Char, i.e. string input, no state
-  , Parse(..)	-- instances: (), (a,b), (a,b,c), Maybe a, Either a, [a],
-		--            Int, Integer, Float, Double, Char, Bool
-  , parseByRead	-- :: Read a => String -> TextParser a
+    TextParser  -- synonym for Parser Char, i.e. string input, no state
+  , Parse(..)   -- instances: (), (a,b), (a,b,c), Maybe a, Either a, [a],
+                --            Int, Integer, Float, Double, Char, Bool
+  , parseByRead -- :: Read a => String -> TextParser a
   , readByParse -- :: TextParser a -> ReadS a
   , readsPrecByParsePrec -- :: (Int->TextParser a) -> Int -> ReadS a
     -- ** Combinators specific to string input, lexed haskell-style
-  , word	-- :: TextParser String
-  , isWord	-- :: String -> TextParser ()
-  , literal	-- :: String -> TextParser ()
-  , optionalParens	-- :: TextParser a -> TextParser a
-  , parens	-- :: Bool -> TextParser a -> TextParser a
-  , field	-- :: Parse a => String -> TextParser a
+  , word        -- :: TextParser String
+  , isWord      -- :: String -> TextParser ()
+  , literal     -- :: String -> TextParser ()
+  , optionalParens      -- :: TextParser a -> TextParser a
+  , parens      -- :: Bool -> TextParser a -> TextParser a
+  , field       -- :: Parse a => String -> TextParser a
   , constructors-- :: [(String,TextParser a)] -> TextParser a
   , enumeration -- :: Show a => String -> [a] -> TextParser a
     -- ** Parsers for literal numerics and characters
@@ -65,7 +65,7 @@ class Parse a where
     parsePrec _ = optionalParens parse
     -- | Parsing a list of items by default accepts the [] and comma syntax,
     --   except when the list is really a character string using \"\".
-    parseList :: TextParser [a]	-- only to distinguish [] and ""
+    parseList :: TextParser [a] -- only to distinguish [] and ""
     parseList  = do { isWord "[]"; return [] }
                    `onFail`
                  do { isWord "["; isWord "]"; return [] }
@@ -377,7 +377,7 @@ parseLitChar = do c <- next
 
 -- Basic types
 instance Parse Int where
- -- parse = parseByRead "Int"	-- convert from Integer, deals with minInt
+ -- parse = parseByRead "Int"   -- convert from Integer, deals with minInt
     parse = fmap fromInteger $
               do many (satisfy isSpace); parseSigned parseDec
 instance Parse Integer where
@@ -396,7 +396,7 @@ instance Parse Char where
  --                                           else fail "expected a char" }
  -- parseList = bracket (isWord "\"") (satisfy (=='"'))
  --                     (many (satisfy (/='"')))
-	-- not totally correct for strings...
+        -- not totally correct for strings...
     parseList = do { w <- word; if head w == '"' then return (init (tail w))
                                 else fail "not a string" }
 

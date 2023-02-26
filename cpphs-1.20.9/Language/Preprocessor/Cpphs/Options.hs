@@ -24,7 +24,7 @@ import Data.Maybe
 import Data.List (isPrefixOf)
 
 -- | Cpphs options structure.
-data CpphsOptions = CpphsOptions 
+data CpphsOptions = CpphsOptions
     { infiles   :: [FilePath]
     , outfiles  :: [FilePath]
     , defines   :: [(String,String)]

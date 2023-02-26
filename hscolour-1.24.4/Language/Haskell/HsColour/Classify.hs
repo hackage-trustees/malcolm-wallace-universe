@@ -9,8 +9,8 @@ import Data.List
 -- | Lex Haskell source code into an annotated token stream, without
 --   discarding any characters or layout.
 tokenise :: String -> [(TokenType,String)]
-tokenise str = 
-    let chunks = glue . chunk $ str 
+tokenise str =
+    let chunks = glue . chunk $ str
     in markDefs $ map (\s-> (classify s,s)) chunks
 
 markDefs :: [(TokenType, String)] -> [(TokenType, String)]
@@ -20,7 +20,7 @@ markDefs ((Varop, ">") : (Space, " ") : (Varid, d) : rest) =
     (Varop, ">") : (Space, " ") : (Definition, d) : continue rest
 markDefs rest = continue rest
 
-continue rest 
+continue rest
     = let (thisLine, nextLine) = span (/= (Space, "\n")) rest
       in
         case nextLine of
@@ -47,16 +47,16 @@ chunk s = case Prelude.lex s of
 isLinearSpace c = c `elem` " \t\f" -- " \t\xa0"
 
 -- Glue sequences of tokens into more useful blobs
-glue (q:".":n:rest) | isUpper (head q)	-- qualified names
+glue (q:".":n:rest) | isUpper (head q)  -- qualified names
                     = glue ((q++"."++n): rest)
-glue ("`":rest) =				-- `varid` -> varop
+glue ("`":rest) =                               -- `varid` -> varop
   case glue rest of
     (qn:"`":rest) -> ("`"++qn++"`"): glue rest
     _             -> "`": glue rest
-glue (s:ss)       | all (=='-') s && length s >=2	-- eol comment
+glue (s:ss)       | all (=='-') s && length s >=2       -- eol comment
                   = (s++concat c): glue rest
                   where (c,rest) = break ('\n'`elem`) ss
---glue ("{":"-":ss)  = ("{-"++c): glue rest	-- nested comment
+--glue ("{":"-":ss)  = ("{-"++c): glue rest     -- nested comment
 --                  where (c,rest) = nestcomment 0 ss
 glue ("(":ss) = case rest of
                 ")":rest -> ("(" ++ concat tuple ++ ")") : glue rest
@@ -97,7 +97,7 @@ classify s@(h:t)
     | isSpace h              = Space
     | all (=='-') s          = Comment
     | "--" `isPrefixOf` s
-      && any isSpace s       = Comment		-- not fully correct
+      && any isSpace s       = Comment          -- not fully correct
     | "{-" `isPrefixOf` s    = Comment
     | s `elem` keywords      = Keyword
     | s `elem` keyglyphs     = Keyglyph

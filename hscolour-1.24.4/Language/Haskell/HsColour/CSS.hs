@@ -1,9 +1,9 @@
 -- | Formats Haskell source code as HTML with CSS.
-module Language.Haskell.HsColour.CSS 
+module Language.Haskell.HsColour.CSS
   ( hscolour
   , top'n'tail
-  , renderToken 
-  , pre 
+  , renderToken
+  , pre
   ) where
 
 import Language.Haskell.HsColour.Anchors
@@ -15,11 +15,11 @@ import Language.Haskell.HsColour.HTML (renderAnchors, renderComment,
 hscolour :: Bool   -- ^ Whether to include anchors.
          -> Int    -- ^ Starting line number (for line anchors).
          -> String -- ^ Haskell source code.
-         -> String -- ^ An HTML document containing the coloured 
+         -> String -- ^ An HTML document containing the coloured
                    --   Haskell source code.
 hscolour anchor n =
   pre
-  . (if anchor 
+  . (if anchor
         then renderNewLinesAnchors n
              . concatMap (renderAnchors renderToken)
              . insertAnchors
@@ -69,7 +69,7 @@ cssPrefix title = unlines
     ,"</head>"
     ,"<body>"
     ]
-    
+
 cssSuffix = unlines
     ["</body>"
     ,"</html>"

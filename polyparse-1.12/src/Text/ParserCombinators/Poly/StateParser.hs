@@ -4,19 +4,19 @@
 --   via T.P.Poly.State or T.P.Poly.StateLazy.
 module Text.ParserCombinators.Poly.StateParser
   ( -- * The Parser datatype
-    Parser(P)	-- datatype, instance of: Functor, Monad, PolyParse
-  , Result(..)	-- internal to the parser monad
+    Parser(P)   -- datatype, instance of: Functor, Monad, PolyParse
+  , Result(..)  -- internal to the parser monad
     -- ** basic parsers
-  , next	-- :: Parser s t t
-  , eof		-- :: Parser s t ()
-  , satisfy	-- :: (t->Bool) -> Parser s t t
+  , next        -- :: Parser s t t
+  , eof         -- :: Parser s t ()
+  , satisfy     -- :: (t->Bool) -> Parser s t t
   , onFail      -- :: Parser s t a -> Parser s t a -> Parser s t a
     -- ** State-handling
   , stUpdate    -- :: (s->s) -> Parser s t ()
   , stQuery     -- :: (s->a) -> Parser s t a
   , stGet       -- :: Parser s t s
     -- ** re-parsing
-  , reparse	-- :: [t] -> Parser s t ()
+  , reparse     -- :: [t] -> Parser s t ()
   ) where
 
 
@@ -86,7 +86,7 @@ instance Commitment (Parser s t) where
                            r@(Committed _)  -> r )
             showErr (name,err) = name++":\n"++indent 2 err
 
-infixl 6 `onFail`	-- not sure about precedence 6?
+infixl 6 `onFail`       -- not sure about precedence 6?
 
 -- | @p `onFail` q@ means parse p, unless p fails, in which case
 --   parse q instead.
@@ -98,7 +98,7 @@ onFail :: Parser s t a -> Parser s t a -> Parser s t a
 (P p) `onFail` (P q) = P (\s ts-> continue s ts $ p s ts)
       where
         continue s ts (Failure _ _) = q s ts
-    --  continue _ _  (Committed r)   = r	-- no, remain Committed
+    --  continue _ _  (Committed r)   = r       -- no, remain Committed
         continue _ _  r               = r
 
 ------------------------------------------------------------------------

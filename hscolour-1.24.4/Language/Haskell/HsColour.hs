@@ -20,7 +20,7 @@ import Language.Haskell.HsColour.Colourise  (ColourPrefs(..))
 import qualified Language.Haskell.HsColour.TTY        as TTY
 import qualified Language.Haskell.HsColour.HTML       as HTML
 import qualified Language.Haskell.HsColour.CSS        as CSS
-import qualified Language.Haskell.HsColour.ACSS       as ACSS 
+import qualified Language.Haskell.HsColour.ACSS       as ACSS
 import qualified Language.Haskell.HsColour.InlineCSS  as ICSS
 import qualified Language.Haskell.HsColour.LaTeX      as LaTeX
 import qualified Language.Haskell.HsColour.MIRC       as MIRC
@@ -34,7 +34,7 @@ hscolour :: Output      -- ^ Output format.
          -> ColourPrefs -- ^ Colour preferences (for formats that support them).
          -> Bool        -- ^ Whether to include anchors.
          -> Bool        -- ^ Whether output document is partial or complete.
-         -> String	-- ^ Title for output.
+         -> String      -- ^ Title for output.
          -> Bool        -- ^ Whether input document is literate haskell or not
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
@@ -89,9 +89,9 @@ inlines :: String -> [String]
 inlines s = lines' s id
   where
   lines' []             acc = [acc []]
-  lines' ('\^M':'\n':s) acc = acc ['\n'] : lines' s id	-- DOS
---lines' ('\^M':s)      acc = acc ['\n'] : lines' s id	-- MacOS
-  lines' ('\n':s)       acc = acc ['\n'] : lines' s id	-- Unix
+  lines' ('\^M':'\n':s) acc = acc ['\n'] : lines' s id  -- DOS
+--lines' ('\^M':s)      acc = acc ['\n'] : lines' s id  -- MacOS
+  lines' ('\n':s)       acc = acc ['\n'] : lines' s id  -- Unix
   lines' (c:s)          acc = lines' s (acc . (c:))
 
 
@@ -106,7 +106,7 @@ classify (('>':x):xs)   = Code ('>':x) : classify xs
 classify (x:xs)         = Lit x: classify xs
 
 
-allProg name  = go 
+allProg name  = go
   where
     end       = "\\end{" ++ name ++ "}"
     go []     = []  -- Should give an error message,

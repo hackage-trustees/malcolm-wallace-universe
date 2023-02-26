@@ -118,7 +118,7 @@ satisfy f = do { x <- next
 onFail :: Parser a -> Parser a -> Parser a
 (P p) `onFail` (P q) = P (\ts-> continue ts $ p ts)
   where continue ts (Failure _ _) = q ts
-    --  continue _  (Committed r) = r	-- no, remain Committed
+    --  continue _  (Committed r) = r   -- no, remain Committed
         continue _  r             = r
 
 ------------------------------------------------------------------------

@@ -99,11 +99,11 @@ highlightOff ::  [Char]
 highlightOff = "\ESC[0m"
 
 renderAttrG ::  TerminalType -> Highlight -> [String]
-renderAttrG XTerm256Compatible (Foreground (Rgb r g b)) = 
+renderAttrG XTerm256Compatible (Foreground (Rgb r g b)) =
     [ "38", "5", show ( rgb24bit_to_xterm256 r g b ) ]
-renderAttrG XTerm256Compatible (Background (Rgb r g b)) = 
+renderAttrG XTerm256Compatible (Background (Rgb r g b)) =
     [ "48", "5", show ( rgb24bit_to_xterm256 r g b ) ]
-renderAttrG _ a                                         = 
+renderAttrG _ a                                         =
     [ show (fromEnum (hlProjectToBasicColour8 a)) ]
 
 -- | An infinite supply of colours.

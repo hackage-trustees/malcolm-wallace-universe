@@ -1,5 +1,5 @@
 -- | Formats Haskell source code using HTML with font tags.
-module Language.Haskell.HsColour.HTML 
+module Language.Haskell.HsColour.HTML
     ( hscolour
     , top'n'tail
      -- * Internals
@@ -20,7 +20,7 @@ hscolour :: ColourPrefs -- ^ Colour preferences.
          -> Int         -- ^ Starting line number (for line anchors).
          -> String      -- ^ Haskell source code.
          -> String      -- ^ Coloured Haskell source code.
-hscolour pref anchor n = 
+hscolour pref anchor n =
     pre
     . (if anchor then renderNewLinesAnchors n
                       . concatMap (renderAnchors (renderToken pref))
@@ -52,7 +52,7 @@ renderComment xs@('h':'t':'t':'p':':':'/':'/':_) =
         isUrlChar x = isAlphaNum x || x `elem` ":/?#[]@!$&'()*+,;=-._~%"
         (a,b) = span isUrlChar xs
         renderLink link = "<a href=\"" ++ link ++ "\">" ++ escape link ++ "</a>"
-        
+
 renderComment (x:xs) = escape [x] ++ renderComment xs
 renderComment [] = []
 

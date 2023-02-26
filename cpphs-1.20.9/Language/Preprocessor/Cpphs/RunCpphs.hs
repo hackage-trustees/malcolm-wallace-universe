@@ -30,7 +30,7 @@ runCpphsPass1 options' filename input = do
   let bools  = boolopts options
       preInc = case preInclude options of
                  [] -> ""
-                 is -> concatMap (\f->"#include \""++f++"\"\n") is 
+                 is -> concatMap (\f->"#include \""++f++"\"\n") is
                        ++ "#line 1 \""++cleanPath filename++"\"\n"
 
   pass1 <- cppIfdef filename (defines options) (includes options) bools
@@ -57,7 +57,7 @@ runCpphsReturningSymTab options' filename input = do
   let bools  = boolopts options
       preInc = case preInclude options of
                  [] -> ""
-                 is -> concatMap (\f->"#include \""++f++"\"\n") is 
+                 is -> concatMap (\f->"#include \""++f++"\"\n") is
                        ++ "#line 1 \""++cleanPath filename++"\"\n"
   (pass2,syms) <-
       if macros bools then do

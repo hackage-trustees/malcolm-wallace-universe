@@ -4,17 +4,17 @@
 --   via T.P.Poly.Plain or T.P.Poly.Lazy.
 module Text.ParserCombinators.Poly.Parser
   ( -- * The Parser datatype
-    Parser(P)	-- datatype, instance of: Functor, Monad, PolyParse
-  , Result(..)	-- internal to the Parser Monad.
+    Parser(P)   -- datatype, instance of: Functor, Monad, PolyParse
+  , Result(..)  -- internal to the Parser Monad.
     -- ** Basic parsers
-  , next	-- :: Parser t t
-  , eof		-- :: Parser t ()
-  , satisfy	-- :: (t->Bool) -> Parser t t
-  , satisfyMsg	-- :: Show t => (t->Bool) -> String -> Parser t t
+  , next        -- :: Parser t t
+  , eof         -- :: Parser t ()
+  , satisfy     -- :: (t->Bool) -> Parser t t
+  , satisfyMsg  -- :: Show t => (t->Bool) -> String -> Parser t t
   , onFail      -- :: Parser t a -> Parser t a -> Parser t a
 
     -- ** Re-parsing
-  , reparse	-- :: [t] -> Parser t ()
+  , reparse     -- :: [t] -> Parser t ()
   ) where
 
 import Text.ParserCombinators.Poly.Base
@@ -83,7 +83,7 @@ instance Commitment (Parser t) where
                            r@(Committed _)    -> r )
             showErr (name,err) = name++":\n"++indent 2 err
 
-infixl 6 `onFail`	-- not sure about precedence 6?
+infixl 6 `onFail`       -- not sure about precedence 6?
 
 -- | @p `onFail` q@ means parse p, unless p fails, in which case
 --   parse q instead.

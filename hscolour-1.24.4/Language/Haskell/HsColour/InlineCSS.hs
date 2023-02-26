@@ -9,15 +9,15 @@ import Language.Haskell.HsColour.HTML (renderAnchors, renderComment,
 import Text.Printf
 
 -- | Formats Haskell source code as a complete HTML document with inline styling
-hscolour :: ColourPrefs	-- ^ Preferences for styling.
+hscolour :: ColourPrefs -- ^ Preferences for styling.
          -> Bool   -- ^ Whether to include anchors.
          -> Int    -- ^ Starting line number (for line anchors).
          -> String -- ^ Haskell source code.
-         -> String -- ^ An HTML document containing the coloured 
+         -> String -- ^ An HTML document containing the coloured
                    --   Haskell source code.
 hscolour prefs anchor n =
   pre
-  . (if anchor 
+  . (if anchor
         then renderNewLinesAnchors n
              . concatMap (renderAnchors (renderToken prefs))
              . insertAnchors
@@ -49,7 +49,7 @@ cssPrefix title = unlines
     ,"</head>"
     ,"<body style=\"background-color: #131313; color: #ffffff;\">"
     ]
-    
+
 cssSuffix = unlines
     ["</body>"
     ,"</html>"

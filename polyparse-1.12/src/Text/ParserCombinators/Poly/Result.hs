@@ -1,6 +1,6 @@
 module Text.ParserCombinators.Poly.Result
   ( -- * The parsing result type
-    Result(..)	-- A parsing result type, with Success, Failure, and Commitment.
+    Result(..)  -- A parsing result type, with Success, Failure, and Commitment.
   , resultToEither
   ) where
 

@@ -31,7 +31,7 @@ main = do
 
   args <- getArgs
   args <- return $ if "--cpp" `elem` args then convertArgs args else args
-  
+
   prog <- getProgName
   when ("--version" `elem` args)
        (do putStrLn (prog++" "++version)
@@ -49,7 +49,7 @@ main = do
       ins  = infiles  options
       outs = outfiles options
       out = listToMaybe outs
-  
+
   when (isLeft parsedArgs)
        (do putStrLn $ "Unknown option "++fromLeft parsedArgs
                       ++", for valid options try "++prog++" --help\n"
@@ -88,7 +88,7 @@ convertArgs :: [String] -> [String]
 convertArgs xs = f (ConvertArgs False True "-" "-") xs
     where
         flg = "DUI"
-    
+
         f e (['-',r]:x:xs) | r `elem` flg = ('-':r:x) : f e xs
         f e (x@('-':r:_):xs) | r `elem` flg = x : f e xs
         f e ("-o":x:xs) = ('-':'O':x) : f e xs
@@ -106,11 +106,10 @@ convertArgs xs = f (ConvertArgs False True "-" "-") xs
         f e ("-version":xs) = "--version" : f e xs
         f e (('-':x):xs) = f e xs -- strip all other flags
         f e (x:xs) = f (if infile e == "-" then e{infile=x} else e{outfile=x}) xs
-        
+
         f e [] = ["--hashes" | not (traditional e)] ++
                  ["--strip" | traditional e && strip e] ++
                  ["--strip-eol" | not (traditional e) && strip e] ++
                  [infile e] ++
                  ["-O" ++ outfile e | outfile e /= "-"]
-
 

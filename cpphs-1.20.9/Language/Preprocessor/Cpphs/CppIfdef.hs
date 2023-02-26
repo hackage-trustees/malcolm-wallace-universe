@@ -3,7 +3,7 @@
 -- Module      :  CppIfdef
 -- Copyright   :  1999-2004 Malcolm Wallace
 -- Licence     :  LGPL
--- 
+--
 -- Maintainer  :  Malcolm Wallace <Malcolm.Wallace@cs.york.ac.uk>
 -- Stability   :  experimental
 -- Portability :  All
@@ -236,7 +236,7 @@ expandSymOrCall st =
     fragment = many1 (satisfy (`notElem`",)"))
     convert "defined" [arg] =
       case lookupST arg st of
-        Nothing | all isDigit arg    -> return arg 
+        Nothing | all isDigit arg    -> return arg
         Nothing                      -> return "0"
         Just (a@AntiDefined{})       -> return "0"
         Just (a@SymbolReplacement{}) -> return "1"

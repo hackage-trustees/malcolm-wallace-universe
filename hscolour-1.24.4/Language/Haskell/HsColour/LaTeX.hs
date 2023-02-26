@@ -8,7 +8,7 @@ import Language.Haskell.HsColour.General
 -- | Formats Haskell source code as a complete LaTeX document.
 hscolour :: ColourPrefs -- ^ Colour preferences.
          -> String      -- ^ Haskell source code.
-         -> String      -- ^ A LaTeX document\/fragment containing the coloured 
+         -> String      -- ^ A LaTeX document\/fragment containing the coloured
                         --   Haskell source code.
 hscolour pref = concatMap (renderToken pref) . tokenise
 
@@ -38,7 +38,7 @@ filterSpace []        = []
 
 -- | Filters the characters "#$%&~_^\{}" which are special
 --   in LaTeX.
-filterSpecial :: String  -- ^ The string to filter. 
+filterSpecial :: String  -- ^ The string to filter.
               -> String  -- ^ The LaTeX-safe string.
 filterSpecial ('#':cs)  = '\\':'#':(filterSpecial cs)
 filterSpecial ('$':cs)  = '\\':'$':(filterSpecial cs)

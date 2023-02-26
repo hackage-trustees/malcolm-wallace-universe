@@ -3,25 +3,25 @@
 -- Module      :  Text.ParserCombinators.HuttonMeijer
 -- Copyright   :  Graham Hutton (University of Nottingham), Erik Meijer (University of Utrecht)
 -- Licence     :  BSD
--- 
+--
 -- Maintainer  :  Malcolm Wallace <Malcolm.Wallace@cs.york.ac.uk>
 -- Stability   :  Stable
 -- Portability :  All
 --
 --                  A LIBRARY OF MONADIC PARSER COMBINATORS
--- 
+--
 --                               29th July 1996
--- 
+--
 --                  Graham Hutton               Erik Meijer
 --             University of Nottingham    University of Utrecht
--- 
+--
 -- This Haskell script defines a library of parser combinators, and is
 -- taken from sections 1-6 of our article "Monadic Parser Combinators".
 -- Some changes to the library have been made in the move from Gofer
 -- to Haskell:
--- 
+--
 --    * Do notation is used in place of monad comprehension notation;
--- 
+--
 --    * The parser datatype is defined using "newtype", to avoid the overhead
 --      of tagging and untagging parsers with the P constructor.
 -----------------------------------------------------------------------------
@@ -195,7 +195,7 @@ spaces             = do {many1 (sat isSpace); return ()}
 
 comment           :: Parser ()
 --comment            = do {string "--"; many (sat (\x -> x /= '\n')); return ()}
---comment            = do 
+--comment            = do
 --                       _ <- string "--"
 --                       _ <- many (sat (\x -> x /= '\n'))
 --                       return ()

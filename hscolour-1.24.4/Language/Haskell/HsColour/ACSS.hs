@@ -5,7 +5,7 @@ module Language.Haskell.HsColour.ACSS (
   , AnnMap (..)
   , Loc (..)
   , breakS
-  , srcModuleName 
+  , srcModuleName
   ) where
 
 import Language.Haskell.HsColour.Anchors
@@ -14,17 +14,17 @@ import Language.Haskell.HsColour.HTML (renderAnchors, renderComment,
                                        renderNewLinesAnchors, escape)
 import qualified Language.Haskell.HsColour.CSS as CSS
 
-import Data.Maybe  (fromMaybe) 
+import Data.Maybe  (fromMaybe)
 import qualified Data.Map as M
 import Data.List   (isSuffixOf, findIndex, elemIndices, intercalate)
 import Data.Char   (isLower, isSpace, isAlphaNum)
 import Text.Printf
 import Debug.Trace
 
-newtype AnnMap = Ann (M.Map Loc (String, String))                    
+newtype AnnMap = Ann (M.Map Loc (String, String))
 newtype Loc    = L (Int, Int) deriving (Eq, Ord, Show)
 
--- | Formats Haskell source code using HTML and mouse-over annotations 
+-- | Formats Haskell source code using HTML and mouse-over annotations
 hscolour :: Bool     -- ^ Whether to include anchors.
          -> Int      -- ^ Starting line number (for line anchors).
          -> String   -- ^ Haskell source code, Annotations as comments at end
@@ -32,13 +32,13 @@ hscolour :: Bool     -- ^ Whether to include anchors.
 
 hscolour anchor n = hsannot anchor n . splitSrcAndAnns
 
--- | Formats Haskell source code using HTML and mouse-over annotations 
+-- | Formats Haskell source code using HTML and mouse-over annotations
 hsannot  :: Bool             -- ^ Whether to include anchors.
          -> Int              -- ^ Starting line number (for line anchors).
          -> (String, AnnMap) -- ^ Haskell Source, Annotations
          -> String           -- ^ Coloured Haskell source code.
 
-hsannot anchor n = 
+hsannot anchor n =
     CSS.pre
     . (if anchor then -- renderNewLinesAnchors n .
                       concatMap (renderAnchors renderAnnotToken)
@@ -46,25 +46,25 @@ hsannot anchor n =
                  else concatMap renderAnnotToken)
     . annotTokenise
 
-annotTokenise  :: (String, AnnMap) -> [(TokenType, String, Maybe String)] 
-annotTokenise (src, Ann annm) 
-  = zipWith (\(x,y) z -> (x,y, snd `fmap` z)) toks annots 
-  where toks       = tokenise src 
-        spans      = tokenSpans $ map snd toks 
+annotTokenise  :: (String, AnnMap) -> [(TokenType, String, Maybe String)]
+annotTokenise (src, Ann annm)
+  = zipWith (\(x,y) z -> (x,y, snd `fmap` z)) toks annots
+  where toks       = tokenise src
+        spans      = tokenSpans $ map snd toks
         annots     = map (`M.lookup` annm) spans
 
 tokenSpans :: [String] -> [Loc]
-tokenSpans = scanl plusLoc (L (1, 1)) 
+tokenSpans = scanl plusLoc (L (1, 1))
 
 plusLoc :: Loc -> String -> Loc
-plusLoc (L (l, c)) s 
+plusLoc (L (l, c)) s
   = case '\n' `elemIndices` s of
       [] -> L (l, (c + n))
       is -> L ((l + length is), (n - maximum is))
     where n = length s
 
 renderAnnotToken :: (TokenType, String, Maybe String) -> String
-renderAnnotToken (x,y, Nothing) 
+renderAnnotToken (x,y, Nothing)
   = CSS.renderToken (x, y)
 renderAnnotToken (x,y, Just ann)
   = printf template (escape ann) (CSS.renderToken (x, y))
@@ -77,15 +77,15 @@ renderAnnotToken (x,y, Just ann)
 
 
 insertAnnotAnchors :: [(TokenType, String, a)] -> [Either String (TokenType, String, a)]
-insertAnnotAnchors toks 
+insertAnnotAnchors toks
   = stitch (zip toks' toks) $ insertAnchors toks'
-  where toks' = [(x,y) | (x,y,_) <- toks] 
+  where toks' = [(x,y) | (x,y,_) <- toks]
 
 stitch ::  Eq b => [(b, c)] -> [Either a b] -> [Either a c]
 stitch xys ((Left a) : rest)
   = (Left a) : stitch xys rest
-stitch ((x,y):xys) ((Right x'):rest) 
-  | x == x' 
+stitch ((x,y):xys) ((Right x'):rest)
+  | x == x'
   = (Right y) : stitch xys rest
   | otherwise
   = error "stitch"
@@ -93,8 +93,8 @@ stitch _ []
   = []
 
 
-splitSrcAndAnns ::  String -> (String, AnnMap) 
-splitSrcAndAnns s = 
+splitSrcAndAnns ::  String -> (String, AnnMap)
+splitSrcAndAnns s =
   let ls = lines s in
   case findIndex (breakS ==) ls of
     Nothing -> (s, Ann M.empty)
@@ -106,34 +106,34 @@ splitSrcAndAnns s =
 
 srcModuleName :: String -> String
 srcModuleName = fromMaybe "Main" . tokenModule . tokenise
-  
-tokenModule toks 
-  = do i <- findIndex ((Keyword, "module") ==) toks 
+
+tokenModule toks
+  = do i <- findIndex ((Keyword, "module") ==) toks
        let (_, toks')  = splitAt (i+2) toks
        j <- findIndex ((Space ==) . fst) toks'
        let (toks'', _) = splitAt j toks'
        return $ concatMap snd toks''
 
-breakS = "MOUSEOVER ANNOTATIONS" 
+breakS = "MOUSEOVER ANNOTATIONS"
 
 annotParse :: String -> String -> AnnMap
 annotParse mname = Ann . M.fromList . parseLines mname 0 . lines
 
-parseLines mname i [] 
+parseLines mname i []
   = []
-parseLines mname i ("":ls)      
+parseLines mname i ("":ls)
   = parseLines mname (i+1) ls
-parseLines mname i (x:f:l:c:n:rest) 
-  | f /= mname -- `isSuffixOf` mname 
+parseLines mname i (x:f:l:c:n:rest)
+  | f /= mname -- `isSuffixOf` mname
   = {- trace ("wrong annot f = " ++ f ++ " mname = " ++ mname) $ -} parseLines mname (i + 5 + num) rest'
-  | otherwise 
+  | otherwise
   = (L (line, col), (x, anns)) : parseLines mname (i + 5 + num) rest'
     where line  = (read l) :: Int
           col   = (read c) :: Int
           num   = (read n) :: Int
           anns  = intercalate "\n" $ take num rest
           rest' = drop num rest
-parseLines _ i _              
+parseLines _ i _
   = error $ "Error Parsing Annot Input on Line: " ++ show i
 
 takeFileName s = map slashWhite s
@@ -141,7 +141,7 @@ takeFileName s = map slashWhite s
 
 instance Show AnnMap where
   show (Ann m) = "\n\n" ++ (concatMap ppAnnot $ M.toList m)
-    where ppAnnot (L (l, c), (x,s)) =  x ++ "\n" 
+    where ppAnnot (L (l, c), (x,s)) =  x ++ "\n"
                                     ++ show l ++ "\n"
                                     ++ show c ++ "\n"
                                     ++ show (length $ lines s) ++ "\n"

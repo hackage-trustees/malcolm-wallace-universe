@@ -20,7 +20,7 @@ base256 kont x =
         (r,gb) = divMod x 256
         (g,b)  = divMod gb 256
         fi = fromIntegral
-    in 
+    in
         kont (fi r) (fi g) (fi b)
 
 -- | Convert a three-digit numeral in the given (as arg 1) base to its integer value.
@@ -34,7 +34,7 @@ rgb24bit_to_xterm256 r g b = let f = (`div` 43)
                           in 16 + unbase 6 (f r) (f g) (f b)
 
 
--- | Ap\"proxi\"mate a 24-bit Rgb colour with an ANSI8 colour. Will leave other colours unchanged and will never return an 'Rgb' constructor value. 
+-- | Ap\"proxi\"mate a 24-bit Rgb colour with an ANSI8 colour. Will leave other colours unchanged and will never return an 'Rgb' constructor value.
 projectToBasicColour8 ::  Colour -> Colour
 projectToBasicColour8 (Rgb r g b) = let f = (`div` 128)
                           in  toEnum ( unbase 2 (f r) (f g) (f b) )
@@ -47,20 +47,20 @@ hlProjectToBasicColour8 (Foreground c) = Foreground (projectToBasicColour8 c)
 hlProjectToBasicColour8 (Background c) = Background (projectToBasicColour8 c)
 hlProjectToBasicColour8 h = h
 
-        
+
 
 instance Enum Colour where
     toEnum 0 = Black
-    toEnum 1 = Red 
-    toEnum 2 = Green 
-    toEnum 3 = Yellow 
-    toEnum 4 = Blue 
-    toEnum 5 = Magenta 
-    toEnum 6 = Cyan 
-    toEnum 7 = White 
+    toEnum 1 = Red
+    toEnum 2 = Green
+    toEnum 3 = Yellow
+    toEnum 4 = Blue
+    toEnum 5 = Magenta
+    toEnum 6 = Cyan
+    toEnum 7 = White
     -- Arbitrary extension; maybe just 'error' out instead
     toEnum x = base256 Rgb (x-8)
-    
+
     fromEnum Black   = 0
     fromEnum Red     = 1
     fromEnum Green   = 2
@@ -71,7 +71,7 @@ instance Enum Colour where
     fromEnum White   = 7
     -- Arbitrary extension; maybe just 'error' out instead
     fromEnum (Rgb r g b) = 8 + unbase 256 r g b
- 
+
 
 -- | Types of highlighting supported by ANSI codes (and some extra styles).
 data Highlight =
@@ -87,7 +87,4 @@ data Highlight =
   -- The above styles are ANSI-supported, with the exception of the 'Rgb' constructor for 'Colour's.  Below are extra styles (e.g. for Html rendering).
   | Italic
   deriving (Eq,Show,Read)
-
-
-
 

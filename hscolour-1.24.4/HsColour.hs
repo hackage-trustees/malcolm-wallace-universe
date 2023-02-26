@@ -68,8 +68,8 @@ main = do
       lhs       = useDefault  Nothing     id           [ Just b | LHS b<- good ]
       title     = useDefault  "Haskell code" id        [ f | Input f   <- good ]
       ioWrapper = useDefaults (ttyInteract  outFile (guessLiterate lhs ""))
-                              (fileInteract outFile annFile)   
-			      [(f, guessLiterate lhs f) | Input f <- good]
+                              (fileInteract outFile annFile)
+                              [(f, guessLiterate lhs f) | Input f <- good]
   when (not (null bad)) $
        errorOut ("Unrecognised option(s): "++unwords bad++"\n"++usage prog)
   when (Help `elem` good)        $ writeResult [] (usage prog)
@@ -82,21 +82,21 @@ main = do
        errorOut ("Can only have one output file at a time.")
   when (length annFile > 1) $
        errorOut ("Can only use a single annotation file for annotated-CSS output")
-  
+
   ioWrapper (HSColour.hscolour output pref anchors partial title)
 
   where
     writeResult outF s = do if null outF then putStrLn s
                                          else writeUTF8File (last outF) s
                             exitSuccess
-    fileInteract out ann inFs u 
+    fileInteract out ann inFs u
       = do h <- case out of
                   []     -> return stdout
                   [outF] -> openFile outF WriteMode >>= set_utf8_io_enc
            forM_ inFs $ \ (f, lit) -> do
              src <- readUTF8File f
              a   <- readAnnots src ann
-             hPutStr h $ u lit $ src ++ a 
+             hPutStr h $ u lit $ src ++ a
            hClose h
     ttyInteract []     lit u = do hSetBuffering stdout NoBuffering
                                   Prelude.interact (u lit)
