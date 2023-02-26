@@ -252,7 +252,7 @@ parseFloat = do ds   <- many1 (satisfy isDigit)
                          `onFail` return [] )
                 exp  <- exponent `onFail` return 0
                 ( return . fromRational . (* (10^^(exp - length frac)))
-                  . (%1) .  (\ (Right x)->x) . fst
+                  . (% 1) .  (\ (Right x) -> x) . fst
                   . runParser parseDec ) (ds++frac)
              `onFail`
              do w <- many (satisfy (not.isSpace))

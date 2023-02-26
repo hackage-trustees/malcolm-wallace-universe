@@ -301,7 +301,7 @@ parseFloat = do ds   <- many1Satisfy isDigit
                          `onFail` return BS.empty )
                 exp  <- exponent `onFail` return 0
                 ( return . fromRational . (* (10^^(exp - BS.length frac)))
-                  . (%1) .  (\ (Right x)->x) . fst
+                  . (% 1) .  (\ (Right x) -> x) . fst
                   . runParser parseDec ) (ds `BS.append` frac)
              `onFail`
              do w <- manySatisfy isAlpha
