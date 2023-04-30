@@ -1,0 +1,52 @@
+name: stack
+on:
+  push:
+    branches:
+      - master
+      - ci*
+  pull_request:
+    branches:
+      - master
+      - ci*
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  stack:
+    name: ${{ matrix.os }} stack ${{ matrix.ghc }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - os: windows-latest
+          ghc: 9.4.5
+          resolver: nightly-2023-04-30
+
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Install GHC and stack with haskell/actions/setup
+      uses: haskell/actions/setup@wz1000-ghcup
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        enable-stack: true
+        cabal-update: false
+
+    - name: Create stack.yaml
+      run: |
+        echo "resolver: ${{ matrix.resolver }}" > stack.yaml
+        echo "packages: [cpphs-1.20.9, hscolour-1.24.4, polyparse-1.12]" >> stack.yaml
+
+    - name: Build dependencies
+      run: stack build --dependencies-only
+
+    - name: Build
+      run: stack build
+
+    - name: Run tests
+      run: stack test
