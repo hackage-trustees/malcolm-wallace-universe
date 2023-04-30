@@ -1,4 +1,4 @@
-name: stack
+name: stack-ghcup
 on:
   push:
     branches:
@@ -14,7 +14,7 @@ defaults:
     shell: bash
 
 jobs:
-  stack:
+  stack-ghcup:
     name: ${{ matrix.os }} stack ${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -43,10 +43,10 @@ jobs:
         echo "packages: [cpphs-1.20.9, hscolour-1.24.4, polyparse-1.12]" >> stack.yaml
 
     - name: Build dependencies
-      run: stack build --dependencies-only
+      run: stack build --system-ghc --dependencies-only
 
     - name: Build
-      run: stack build
+      run: stack build --system-ghc
 
     - name: Run tests
-      run: stack test
+      run: stack test --system-ghc
