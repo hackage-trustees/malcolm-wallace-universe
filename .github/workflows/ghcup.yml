@@ -1,0 +1,46 @@
+name: ghcup
+on:
+  push:
+    branches:
+      - master
+      - ci*
+  pull_request:
+    branches:
+      - master
+      - ci*
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  ghcup:
+    name: ${{ matrix.os }} ghcup ${{ matrix.ghc }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        ghc: [9.6.1, 9.4.5, 9.2.7, 9.0.2, 8.10.7]
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Install GHC
+      run: ghcup install ghc ${{ matrix.ghc }} --set
+
+    - name: Update cabal index
+      run: cabal update
+
+    - name: Configure
+      run: cabal configure --enable-tests --enable-benchmarks
+
+    - name: Build dependencies
+      run: cabal build all --dependencies-only
+
+    - name: Build
+      run: cabal build all
+
+    - name: Run tests
+      run: cabal test all
