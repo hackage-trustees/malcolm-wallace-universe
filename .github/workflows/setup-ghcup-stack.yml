@@ -1,4 +1,4 @@
-name: stack-ghcup
+name: setup-ghcup-stack
 on:
   push:
     branches:
@@ -14,7 +14,7 @@ defaults:
     shell: bash
 
 jobs:
-  stack-ghcup:
+  setup-ghcup-stack:
     name: ${{ matrix.os }} stack ${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -25,22 +25,17 @@ jobs:
         - os: windows-latest
           ghc: 9.4.5
           resolver: nightly-2023-04-30
-        - os: windows-latest
-          ghc: 9.2.7
-          resolver: lts-20.19
-        - os: windows-latest
-          ghc: 9.0.2
-          resolver: lts-19.33
-        - os: windows-latest
-          ghc: 8.10.7
-          resolver: lts-18.28
 
     steps:
 
     - uses: actions/checkout@v3
 
-    - name: Install GHC
-      run: ghcup install ghc ${{ matrix.ghc }} --set
+    - name: Install GHC and stack with haskell/actions/setup
+      uses: haskell/actions/setup@wz1000-ghcup
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        enable-stack: true
+        cabal-update: false
 
     - name: Create stack.yaml
       run: |
