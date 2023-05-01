@@ -24,14 +24,14 @@ jobs:
         include:
         - os: windows-latest
           ghc: 9.4.5
-          resolver: nightly-2023-04-30
+          resolver: nightly-2023-05-01
 
     steps:
 
     - uses: actions/checkout@v3
 
     - name: Install GHC and stack with haskell/actions/setup
-      uses: haskell/actions/setup@wz1000-ghcup
+      uses: haskell/actions/setup@v2.3.8
       with:
         ghc-version: ${{ matrix.ghc }}
         enable-stack: true
