@@ -21,7 +21,7 @@ import Control.Monad  ( when )
 import Data.List   ( isPrefixOf )
 
 version :: String
-version = "1.20.9"
+version = "1.20.9.1"
 
 main :: IO ()
 main = do
@@ -112,4 +112,3 @@ convertArgs xs = f (ConvertArgs False True "-" "-") xs
                  ["--strip-eol" | not (traditional e) && strip e] ++
                  [infile e] ++
                  ["-O" ++ outfile e | outfile e /= "-"]
-
