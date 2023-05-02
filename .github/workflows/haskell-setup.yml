@@ -42,5 +42,8 @@ jobs:
     - name: Build
       run: cabal build all
 
+    - name: cpphs version
+      run: cabal exec -- cpphs --version
+
     - name: Run tests
       run: cabal test all

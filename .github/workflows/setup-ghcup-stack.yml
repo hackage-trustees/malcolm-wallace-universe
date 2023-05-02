@@ -31,7 +31,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install GHC and stack with haskell/actions/setup
-      uses: haskell/actions/setup@v2.3.8
+      uses: haskell/actions/setup@v2
       with:
         ghc-version: ${{ matrix.ghc }}
         enable-stack: true
@@ -47,6 +47,9 @@ jobs:
 
     - name: Build
       run: stack build --system-ghc
+
+    - name: cpphs version
+      run: stack exec -- cpphs --version
 
     - name: Run tests
       run: stack test --system-ghc

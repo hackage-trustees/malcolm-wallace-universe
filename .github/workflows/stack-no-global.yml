@@ -46,5 +46,8 @@ jobs:
     - name: Build
       run: stack build
 
+    - name: cpphs version
+      run: stack exec -- cpphs --version
+
     - name: Run tests
       run: stack test
