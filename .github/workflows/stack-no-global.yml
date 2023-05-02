@@ -43,11 +43,17 @@ jobs:
     - name: Build dependencies
       run: stack build --dependencies-only
 
+    - name: Build cpphs
+      run: stack build --system-ghc --no-test cpphs
+
+    - name: cpphs version (run)
+      run: stack run --system-ghc --no-test cpphs -- --version
+
+    - name: cpphs version (exec)
+      run: stack exec --system-ghc --no-test -- cpphs --version
+
     - name: Build
       run: stack build
-
-    - name: cpphs version
-      run: stack exec -- cpphs --version
 
     - name: Run tests
       run: stack test

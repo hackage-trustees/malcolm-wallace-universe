@@ -33,7 +33,16 @@ jobs:
         ghc-version: ${{ matrix.ghc }}
         cabal-update: true
 
-    - name: Configure
+    - name: Build cpphs
+      run: cabal build cpphs:exe:cpphs
+
+    - name: cpphs version (run)
+      run: cabal run cpphs -- --version
+
+    - name: cpphs version (exec)
+      run: cabal exec -- cpphs --version
+
+    - name: Configure w/ tests
       run: cabal configure --enable-tests --enable-benchmarks
 
     - name: Build dependencies
@@ -41,9 +50,6 @@ jobs:
 
     - name: Build
       run: cabal build all
-
-    - name: cpphs version
-      run: cabal exec -- cpphs --version
 
     - name: Run tests
       run: cabal test all
