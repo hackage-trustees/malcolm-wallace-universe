@@ -103,6 +103,22 @@ Executable cpphs
         Language.Preprocessor.Cpphs.Tokenise
         TimeCompat
 
+test-suite test
+    type: exitcode-stdio-1.0
+    main-is: Test.hs
+    hs-source-dirs: test
+    build-depends:
+        base
+      , cpphs
+      , gitrev >= 1.3.1 && < 2
+    build-tool-depends: cpphs:cpphs
+    ghc-options:        -pgmP cpphs -optP --cpp
+
+    other-modules:
+      Version
+      VersionCommit
+      Paths_cpphs
+
 Source-Repository head
     Type:     git
     Location: https://github.com/hackage-trustees/malcolm-wallace-universe

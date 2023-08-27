@@ -1,0 +1,4 @@
+branches: master ci*
+
+-- test for cpphs uses gitrev which wants base >= 4.6
+tests: >= 7.6
