@@ -237,7 +237,7 @@ parseInt :: (Integral a) => String ->
 parseInt base radix isDigit digitToInt =
                  do cs <- many1 (satisfy isDigit)
                     return (foldl1 (\n d-> n*radix+d)
-                                   (map (fromIntegral.digitToInt) cs))
+                                   (map (fromIntegral . digitToInt) cs))
                  `adjustErr` (++("\nexpected one or more "++base++" digits"))
 parseDec, parseOct, parseHex :: (Integral a) => TextParser a
 parseDec = parseInt "decimal" 10 Char.isDigit    Char.digitToInt
@@ -255,7 +255,7 @@ parseFloat = do ds   <- many1 (satisfy isDigit)
                   . (% 1) .  (\ (Right x) -> x) . fst
                   . runParser parseDec ) (ds++frac)
              `onFail`
-             do w <- many (satisfy (not.isSpace))
+             do w <- many (satisfy (not . isSpace))
                 case map toLower w of
                   "nan"      -> return (0/0)
                   "infinity" -> return (1/0)
@@ -441,7 +441,7 @@ instance Parse a => Parse (Maybe a) where
             parens (p>9)   (do { isWord "Just"
                                ; fmap Just $ parsePrec 10
                                      `adjustErrBad` ("but within Just, "++) })
-            `adjustErr` (("expected a Maybe (Just or Nothing)\n"++).indent 2)
+            `adjustErr` (("expected a Maybe (Just or Nothing)\n"++) . indent 2)
 
 instance (Parse a, Parse b) => Parse (Either a b) where
     parsePrec p =

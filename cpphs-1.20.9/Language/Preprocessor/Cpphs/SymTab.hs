@@ -36,11 +36,11 @@ flattenST :: SymTab v -> [v]
 
 emptyST           = itgen maxHash []
 insertST (s,v) ss = itiap (hash s) ((s,v):)    ss id
-deleteST  s    ss = itiap (hash s) (filter ((/=s).fst)) ss id
-lookupST  s    ss = let vs = filter ((==s).fst) ((itind (hash s)) ss)
+deleteST  s    ss = itiap (hash s) (filter ((/=s) . fst)) ss id
+lookupST  s    ss = let vs = filter ((==s) . fst) ((itind (hash s)) ss)
                     in if null vs then Nothing
                        else (Just . snd . head) vs
-definedST s    ss = let vs = filter ((==s).fst) ((itind (hash s)) ss)
+definedST s    ss = let vs = filter ((==s) . fst) ((itind (hash s)) ss)
                     in (not . null) vs
 flattenST      ss = itfold (map snd) (++) ss
 
