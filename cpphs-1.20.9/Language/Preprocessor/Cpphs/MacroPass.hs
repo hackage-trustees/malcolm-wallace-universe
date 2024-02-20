@@ -167,7 +167,7 @@ macroProcess pr layout lang st (Ident p x: ws) =
                             Just (args,ws') ->
                                 if length args /= length (arguments hd) then
                                      emit x $ macroProcess pr layout lang st ws
-                                else do args' <- mapM (fmap (concat.onlyRights)
+                                else do args' <- mapM (fmap (concat . onlyRights)
                                                        . macroProcess pr layout
                                                                         lang st)
                                                       args

@@ -271,7 +271,7 @@ parseInt :: (Integral a) => String ->
 parseInt base radix isDigit digitToInt =
                  do cs <- many1 (satisfy isDigit)
                     return (foldl1 (\n d-> n*radix+d)
-                                   (map (fromIntegral.digitToInt) cs))
+                                   (map (fromIntegral . digitToInt) cs))
                  `adjustErr` (++("\nexpected one or more "++base++" digits"))
 
 -- | Parse a decimal, octal, or hexadecimal (unsigned) Integral numeric literal.
