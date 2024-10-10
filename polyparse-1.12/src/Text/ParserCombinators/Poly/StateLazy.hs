@@ -49,7 +49,9 @@ instance Functor (Parser s t) where
     fmap f (P p) = P (fmap f p)
 instance Monad (Parser s t) where
     return x  = P (return x)
+#ifndef __MHS__
     fail      = Fail.fail
+#endif
     (P f) >>= g = P (f >>= (\(P g')->g') . g)
 instance Fail.MonadFail (Parser s t) where
     fail e    = P (fail e)
