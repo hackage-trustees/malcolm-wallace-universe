@@ -38,7 +38,7 @@ jobs:
       with:
         repository: haskell/containers
         path: containers
-    - name: compile and install time package
+    - name: compile and install containers package
       run: |
         PATH="$HOME/.mcabal/bin:$PATH"
         cd containers/containers
