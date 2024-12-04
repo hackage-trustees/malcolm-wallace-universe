@@ -65,8 +65,12 @@ data SubMode = Any | Pred (Char->Bool) (Posn->String->WordStyle)
 --   * Other is anything else.
 data WordStyle = Ident Posn String | Other String | Cmd (Maybe HashDefine)
   deriving (Eq,Show)
+
 other :: Posn -> String -> WordStyle
-other _ s = Other s
+other _ = Other
+
+lineMarker :: Posn -> WordStyle
+lineMarker p = Cmd (Just (LineDrop (cppline p)))
 
 deWordStyle :: WordStyle -> String
 deWordStyle (Ident _ i) = i
@@ -265,17 +269,29 @@ tokenise stripEol stripComments ansi lang ((pos,str):pos_strs) =
 
 -- | Parse a possible macro call, returning argument list and remaining input
 parseMacroCall :: Posn -> [WordStyle] -> Maybe ([[WordStyle]],[WordStyle])
-parseMacroCall p = call . skip
+parseMacroCall p = uncurry call . skipSpaces 0
   where
-    skip (Other x:xs) | all isSpace x = skip xs
-    skip xss                          = xss
-    call (Other "(":xs)   = (args (0::Int) [] [] . skip) xs
-    call _                = Nothing
-    args 0 w acc (   Other ")" :xs)  = Just (reverse (addone w acc), xs)
-    args 0 w acc (   Other "," :xs)  = args 0     []   (addone w acc) (skip xs)
-    args n w acc (x@(Other "("):xs)  = args (n+1) (x:w)         acc    xs
-    args n w acc (x@(Other ")"):xs)  = args (n-1) (x:w)         acc    xs
-    args n w acc (   Ident _ v :xs)  = args n     (Ident p v:w) acc    xs
-    args n w acc (x@(Other _)  :xs)  = args n     (x:w)         acc    xs
-    args _ _ _   _                   = Nothing
-    addone w acc = reverse (skip w): acc
+    skipSpaces newlineCount (Other x:xs)
+      | all isSpace x           = skipSpaces (newlineCount + countNewlines x) xs
+    skipSpaces newlineCount xss = (newlineCount,xss)
+    call newlineCount (Other "(":xs) = args (0::Int) newlineCount [] [] xs
+    call _ _                         = Nothing
+    args 0 newlineCount w acc (   Other ")" :xs) =
+      let (newlineCount',w')  = skipSpaces newlineCount w
+      in
+    -- we add a line marker at the end of the macro call, that positions the
+    -- the following code after all newlines in the macro call
+      Just (reverse (addone w' acc), lineMarker (newlines (newlineCount'+1) p):xs)
+    -- we have to add an additional `1` because the line marker has to end with a newline
+    args 0 newlineCount w acc (   Other "," :xs) =
+      let (newlineCount1,w')  = skipSpaces newlineCount  w
+          (newlineCount2,xs') = skipSpaces newlineCount1 xs
+      in
+      args 0 newlineCount2 [] (addone w' acc) xs'
+    args n newlineCount w acc (x@(Other "("):xs) = args (n+1) newlineCount               (x:w) acc xs
+    args n newlineCount w acc (x@(Other ")"):xs) = args (n-1) newlineCount               (x:w) acc xs
+    args n newlineCount w acc (x@(Other y  ):xs) = args n (newlineCount+countNewlines y) (x:w) acc xs
+    args n newlineCount w acc (   Ident _ v :xs) = args n     newlineCount       (Ident p v:w) acc xs
+    args _ newlineCount _ _   _                  = Nothing
+    addone w acc = reverse w:acc
+    countNewlines = length . filter (=='\n')

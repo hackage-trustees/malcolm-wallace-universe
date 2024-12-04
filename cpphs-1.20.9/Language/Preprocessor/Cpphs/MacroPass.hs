@@ -25,7 +25,7 @@ import Language.Preprocessor.Cpphs.Tokenise   (tokenise, WordStyle(..)
                                               , parseMacroCall)
 import Language.Preprocessor.Cpphs.SymTab     (SymTab, lookupST, insertST
                                               , emptyST, flattenST)
-import Language.Preprocessor.Cpphs.Position   (Posn, newfile, filename, lineno)
+import Language.Preprocessor.Cpphs.Position   (Posn, newfile, filename, lineno, cppline, newline)
 import Language.Preprocessor.Cpphs.Options    (BoolOptions(..))
 import System.IO.Unsafe (unsafeInterleaveIO)
 import Control.Monad    ((=<<))
