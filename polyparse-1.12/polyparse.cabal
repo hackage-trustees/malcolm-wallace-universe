@@ -43,12 +43,20 @@ source-repository head
   location:  https://github.com/hackage-trustees/malcolm-wallace-universe.git
   subdir:    polyparse-1.12
 
+flag base49
+  description: base >=4.9
+  default: True
+  manual: False
+
 library
   hs-source-dirs:       src
-  build-depends:        base >= 4.3.1.0 && < 5
 
-  if !impl(ghc >= 8.0)
-     build-depends: fail == 4.9.*
+  if flag(base49)
+    build-Depends:
+      base >=4.9 && < 5
+  else
+    build-Depends:
+      base <4.9, fail==4.9.*
 
   exposed-modules:
         Text.ParserCombinators.HuttonMeijer,

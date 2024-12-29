@@ -111,6 +111,7 @@ main = do
                      . ("-annot=ANNOTATIONFILE":)
                      . map (('-':) . fst)) optionTable
                   ++ " ]\n"
+    useDefault :: a -> (a -> a) -> [a] -> a
     useDefault d f list  | null list = d
                          | otherwise = f (head list)
     useDefaults d f list | null list = d
