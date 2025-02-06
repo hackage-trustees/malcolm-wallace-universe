@@ -279,10 +279,14 @@ parseMacroCall p = uncurry call . skipSpaces 0
     args 0 newlineCount w acc (   Other ")" :xs) =
       let (newlineCount',w')  = skipSpaces newlineCount w
       in
-    -- we add a line marker at the end of the macro call, that positions the
+    -- we add a line marker at the end of the macro call that positions the
     -- the following code after all newlines in the macro call
-      Just (reverse (addone w' acc), lineMarker (newlines (newlineCount'+1) p):xs)
-    -- we have to add an additional `1` because the line marker has to end with a newline
+      Just (reverse (addone w' acc)
+    -- if the marco argument does not contain a newline, we don't need a line marker
+           , if newlineCount == 0
+                then xs
+                else lineMarker (newlines (newlineCount'+1) p):xs)
+    -- we have to add `1` because the line marker has to end with a newline
     args 0 newlineCount w acc (   Other "," :xs) =
       let (newlineCount1,w')  = skipSpaces newlineCount  w
           (newlineCount2,xs') = skipSpaces newlineCount1 xs
