@@ -1,6 +1,6 @@
 Name: cpphs
 Version: 1.20.9.1
-x-revision: 1
+x-revision: 2
 Copyright: 2004-2017, Malcolm Wallace
 License: LGPL
 License-File: LICENCE-LGPL
@@ -54,7 +54,7 @@ Library
       Hs-Source-Dirs: . old
 
     else
-      Build-Depends: time >=1.5 && <1.13
+      Build-Depends: time >=1.5 && <1.15
       Hs-Source-Dirs: . new
 
     Exposed-Modules:
@@ -83,7 +83,7 @@ Executable cpphs
       Hs-Source-Dirs: . old
 
     else
-      Build-Depends: time >=1.5 && <1.13
+      Build-Depends: time >=1.5 && <1.15
       Hs-Source-Dirs: . new
 
     Other-Modules:
